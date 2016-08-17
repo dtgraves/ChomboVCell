@@ -1,0 +1,40 @@
+\documentclass[12pt]{article}
+\title{Amoeba cartoon application for diffusion in multiple volumes}
+\author{D. T. Graves, T. J. Ligocki}
+\begin{document}
+\maketitle
+
+\section{Algorithm summary}
+
+Amoeba solves the variable coefficient diffusion equation
+$$
+\frac{\partial \phi}{\partial t} = \nabla \cdot \nu \nabla \phi + \rho
+$$
+where $\phi$ can have any number of variables and both $\nu$ (the diffusion
+coefficient) and $\rho$ (the source term) are functions of both space
+and time.   Boundary condtions are set to homogeneous Neumann at the
+domain boundary.   Boundary condtions at embedded boundaries are set
+to a data value at each irregular face.   This data value is reset at
+every step and can be a function of time and space and the solution. 
+Space is divided into a collection of connected volumes
+${\cal C}$.   The algorithm is summarized as follows.  At each time
+step we:
+\begin{itemize}
+\item Set the source term and the boundary conditions at each
+  irregular cell.
+\item Advance the solution using backward Euler one time step for each
+  component and each volume (this involves $\sum_{i=1}^{N_v} c_i$ solves,
+  where $N_v$ is the number of volumes and $c_i$ is the number of components
+  in volume $i$).
+\end{itemize}
+
+\section{Current state of play}
+\begin{itemize}
+\item Amoeba runs in two and three dimensions. 
+\item It runs slowly.
+\item The solvers usually converge but sometimes a volume will not
+  converge.
+\item I have tried problems with 2 volumes (in {\tt debug.inputs}) and
+9 volumes (in {\tt multisphere.inputs}).
+\end{itemize}
+\end{document}

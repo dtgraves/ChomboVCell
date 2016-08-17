@@ -1,0 +1,43 @@
+# Grid size
+n_cell =  64  64  64
+# n_cell = 128 128 128
+# n_cell = 256 256 256
+# n_cell = 512 256 256
+
+# Maximum box size
+maxboxsize = 16
+
+# Domain domain - physical coordinates
+# prob_lo is the origin of the coordinate system
+prob_lo = -1.0 -1.0 -1.0
+# prob_hi is the high point of the domain in the x direction
+# Note:  dx = dy = dz
+prob_hi =  1.0
+
+# This is a simple geometry made of three nested circles/spheres.
+num_spheres = 3
+
+# This sphere contains #2 and #3
+sphere_center_1       =  0.00 0.00 0.00
+sphere_radius_1       =  0.80
+sphere_phase_inside_1 =  1
+
+# This sphere contains #3
+sphere_center_2       =  0.20 0.10 0.05
+sphere_radius_2       =  0.40
+sphere_phase_inside_2 =  0
+
+# This sphere is inside #1 and #2
+sphere_center_3       =  0.25 0.06 0.02
+sphere_radius_3       =  0.20
+sphere_phase_inside_3 =  1
+
+# There is one intersection list
+num_intersection_lists = 1
+
+# The intersection list contain 2 spheres - #2, #3
+intersection_list_num_1 = 2
+intersection_list_1     = 2 3
+
+# The final phase 0 is the union of these intersections and all remaining
+# spheres.  Phase 1 is the complement of phase 0.

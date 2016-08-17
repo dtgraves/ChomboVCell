@@ -1,0 +1,10 @@
+#!/bin/csh -f
+# Start with a LaTeX document and produce a DVI and PostScript version.
+set target=amoeba
+latex $target.tex
+bibtex $target
+latex $target.tex
+latex $target.tex
+latex $target.tex
+dvips -D 8000 -t letter -Ppdf -Pamz -Pcmz -o - $target.dvi > $target.ps
+dvips -D 8000 -t letter -Ppdf -Pamz -Pcmz -o - $target.dvi | ps2pdf - $target.pdf

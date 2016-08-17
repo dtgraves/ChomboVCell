@@ -1,0 +1,5 @@
+To run the visit script, here is what you do.
+visit -cli
+>>execfile("amoeba.visit.py")
+
+And answer the questions it asks.

@@ -1,0 +1,15 @@
+# Grid size
+# n_cell =  64  32  32
+n_cell = 128  64  64
+# n_cell = 256 128 128
+# n_cell = 512 256 256
+
+# Maximum box size
+maxboxsize = 32
+
+# Domain domain - physical coordinates
+# prob_lo is the origin of the coordinate system
+prob_lo = -20.0001 0.0 0.0
+# prob_hi is the high point of the domain in the x direction
+# Note:  dx = dy = dz
+prob_hi =  20.0

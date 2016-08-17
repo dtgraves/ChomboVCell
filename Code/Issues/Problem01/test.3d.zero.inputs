@@ -1,0 +1,157 @@
+#solver stuff
+#1 gsrb, 0 point jacobi	
+
+ebcfdata.grow_three = true
+#ebcfdata.grow_three = false
+mg_relax_type  = 1
+mg_num_smooths = 32
+mg_hang        = 1.0e-15
+mg_eps         = 1.0e-12
+mg_iter_max    = 400
+#1 vcycle, 2 wcycle and so on
+mg_num_cycles = 1
+
+# 0 almost nothing
+# 1 latex output only
+# 2 bunch more stuff
+testverbosity = 3
+multigrid_verbosity  = 3
+# 1 if you want error in an hdf5 file
+do_error_output = 2
+diffusion_coeff = 0.0001
+
+dt = 0.037500
+#dt = 0.018750
+#dt = 0.009375
+
+max_steps = 1
+#max_steps = 32
+#max_steps = 64
+#max_steps = 128
+
+#expected convergence rate
+expected_rate = 1.0 1.5 1.5
+
+# bc flags
+#    0 = Neumann with value
+#    1 = Dirichlet with value 
+#    2 = Neumann Trig
+#    3 = Dirichlet Trig
+eb_bc_type      = 0
+domain_bc_type  = 0
+order_ebbc      = 2
+
+# Sine frequency multipliers to use
+# for when bcs are trig
+trig = 1.3 2.2 3.1
+
+#values for when bcs are value
+eb_bc_value     = 0.0
+domain_bc_value = 0.0
+
+domain_value = 1.0
+
+zero_phi = true
+
+###GRID STUFF
+max_level    = 1
+ref_ratio    = 2 2 2 2 2 
+#ref_ratio    = 4 4 4 4 4 
+n_cells      = 8 8 8
+#n_cells      = 16 16 16
+#n_cells      = 32 32 32
+#n_cells      =  64 64 64
+#n_cells      =  128 128 128 
+#n_cells      =  256 256 256
+
+
+block_factor = 8
+fill_ratio   = 0.7
+buffer_size  = 2
+max_grid_size = 16
+
+##GEOMETRY STUFF
+domain_length = 0.3 0.3 0.3
+
+#all regular
+# which_geom=0 
+
+# ramp
+# which_geom = 1
+# ramp_normal = -0.25 1.0 0.25
+# ramp_alpha  = 0.0
+
+#  tilted cylinder
+# which_geom = 4 
+# cylinder_axis = 4.0 1.0 1.0
+# cylinder_radiuis = 0.125
+
+# sphere
+# which_geom = 5
+# sphere_center = -0.05 0.05 0.05
+# sphere_radius  = 0.5	
+# inside = false
+
+# multisphere
+# which_geom = 6
+# num_spheres = 12
+#
+# sphere_radius_0 = 0.05
+# sphere_radius_1 = 0.05
+# sphere_radius_2 = 0.05
+# sphere_radius_3 = 0.05
+# sphere_radius_4 = 0.05
+# sphere_radius_5 = 0.05
+# sphere_radius_6 = 0.05
+# sphere_radius_7 = 0.05
+# sphere_radius_8 = 0.05
+# sphere_radius_9 = 0.05
+# sphere_radius_10= 0.05
+# sphere_radius_11= 0.05
+#
+# sphere_center_0 = 0.20  0.25 0.5
+# sphere_center_1 = 0.40  0.20 0.5
+# sphere_center_9 = 0.60  0.25 0.5
+# sphere_center_2 = 0.80  0.20 0.5
+#
+# sphere_center_3 = 0.25  0.5 0.5
+# sphere_center_4 = 0.45  0.45 0.5
+# sphere_center_5 = 0.65  0.5 0.5
+# sphere_center_10= 0.85  0.45 0.5
+#
+# sphere_center_6 = 0.30   0.75 0.5
+# sphere_center_7 = 0.50   0.70 0.5
+# sphere_center_8 = 0.70   0.75 0.5
+# sphere_center_11= 0.90   0.70 0.5
+
+# multiparabola stuff
+# which_geom = 7
+# num_parabolas = 2
+# parabola_updir = 1
+# parabola_amplitude_0 = -5.0
+# parabola_amplitude_1 =  10.0
+# parabola_center_0 = 0.10  0.25 0.5
+# parabola_center_1 = 0.50  0.025 0.5
+
+# parabolic mirroro
+# which_geom = 8
+# mirror_amplitude = -12.3456789
+# mirror_center = 0.98  0.25 0.25
+
+# plane
+which_geom = 10
+plane_normal = 0.000 0.000 1.000
+plane_point  = 0.000 0.000 0.130
+
+# ellipsoid
+# which_geom = 11
+# ellipsoid_radii  = 0.18 0.25 0.3
+# ellipsoid_center = 0.36 0.5 0.5
+# ellipsoid_xaxis  = 3.0 2.0 1.0
+# ellipsoid_fluid_inside = 0
+
+#auto gen ghost
+ghostPhi = 4 4 4 
+ghostRhs = 4 4 4 
+#auto gen num_precond
+num_pre_cond_iters = 4

@@ -1,0 +1,148 @@
+C      _______              __
+C     / ___/ /  ___  __ _  / /  ___
+C    / /__/ _ \/ _ \/  V \/ _ \/ _ \
+C    \___/_//_/\___/_/_/_/_.__/\___/
+C    Please refer to Copyright.txt, in Chombo's root directory.
+
+#include "CONSTANTS.H"
+
+      subroutine POINTGETBCOAMOEBA(
+     &     CHF_REAL[bcopt],
+     &     CHF_CONST_REALVECT[loc],
+     &     CHF_CONST_REAL[time],
+     $     CHF_CONST_INT[ivol],
+     $     CHF_CONST_INT[ivar],
+     &     CHF_CONST_REAL[diffCon],
+     &     CHF_CONST_REALVECT[diffGrad],
+     &     CHF_CONST_REAL[diffTco])
+
+      integer idir
+
+
+C     set to constant + tco* time
+      bcopt = diffCon + diffTco*time
+
+C     add the gradient bit 
+      do idir = 0, CH_SPACEDIM-1
+         bcopt = bcopt + diffGrad(idir)*loc(idir)
+      enddo
+
+      return
+      end
+
+      subroutine GETBCOAMOEBA(
+     &     CHF_FRA1[bco],
+     &     CHF_CONST_REAL[dx],
+     &     CHF_CONST_REAL[time],
+     $     CHF_CONST_INT[ivol],
+     $     CHF_CONST_INT[ivar],
+     &     CHF_BOX[box],
+     &     CHF_CONST_REAL[diffCon],
+     &     CHF_CONST_REALVECT[diffGrad],
+     &     CHF_CONST_REAL[diffTco],
+     $     CHF_CONST_INT[idir])
+
+      integer CHF_DDECL[i;j;k]
+      real_t  loc(0:CH_SPACEDIM-1)
+      real_t  bcopt, offset(0:CH_SPACEDIM-1)
+
+
+
+      CHF_DTERM[
+      offset(0) = (half)*dx;
+      offset(1) = (half)*dx;
+      offset(2) = (half)*dx]
+
+      offset(idir) = zero
+      CHF_MULTIDO[box;i;j;k]
+
+        CHF_DTERM[
+        loc(0) = (i + offset(0))*dx;
+        loc(1) = (j + offset(1))*dx;
+        loc(2) = (k + offset(2))*dx]
+        
+        call pointgetbcoamoeba(bcopt, loc, time, ivol, ivar, diffCon, diffGrad, diffTco)
+
+        bco(CHF_IX[i;j;k]) = bcopt
+
+      CHF_ENDDO
+
+
+      return
+      end
+
+      subroutine AMOEBASIMPLESOURCESINK(
+     &     CHF_FRA1[source],
+     &     CHF_CONST_FRA1[soln],
+     &     CHF_CONST_REAL[sourceScaling],
+     &     CHF_CONST_REAL[sinkScaling],
+     &     CHF_CONST_REAL[dx],
+     &     CHF_CONST_INT[ivol],
+     &     CHF_CONST_INT[ivar],
+     &     CHF_CONST_REALVECT[origin],
+     &     CHF_BOX[box])
+
+      integer CHF_DDECL[i;j;k]
+      real_t  x,y,z,arg, rvol
+
+
+      rvol = one +ivol + ivar
+      CHF_MULTIDO[box;i;j;k]
+        CHF_DTERM[
+        x = (i + half)*dx + origin(0);
+        y = (j + half)*dx + origin(1);
+        z = (k + half)*dx + origin(2)]
+
+        if (CH_SPACEDIM .lt. 3) then
+          z = 0.5
+        endif
+        arg = PI*x*y*z
+        source(CHF_IX[i;j;k]) = rvol*(-sinkScaling*cos(arg) +sourceScaling*sin(arg))
+
+      CHF_ENDDO
+
+      return
+      end
+
+
+      subroutine AMOEBASIMPLESOURCESINKPOINT(
+     &     CHF_REAL[source],
+     &     CHF_CONST_REAL[soln],
+     &     CHF_CONST_REAL[sourceScaling],
+     &     CHF_CONST_REAL[sinkScaling],
+     &     CHF_CONST_REAL[dx],
+     &     CHF_CONST_INT[ivol],
+     &     CHF_CONST_INT[ivar],
+     &     CHF_CONST_REALVECT[origin],
+     &     CHF_CONST_INTVECT[iv])
+
+      integer CHF_DDECL[i;j;k]
+      real_t  x,y,z
+
+C
+C Compute the (source - sink) for the "simple" VCell problem at given
+C cell center and return it in "source"
+C
+      CHF_DTERM[
+      i = iv(0);
+      j = iv(1);
+      k = iv(2)]
+
+      CHF_DTERM[
+      x = (i + half)*dx + origin(0);
+      y = (j + half)*dx + origin(1);
+      z = (k + half)*dx + origin(2)]
+
+      if (CH_SPACEDIM .lt. 3) then
+        z = 0.5
+      endif
+
+      if (x .lt. zero) then
+        source = sourceScaling + ivol + ivar
+      else
+        source = -sinkScaling * soln  - ivol + ivar
+      endif
+
+      return
+      end
+
