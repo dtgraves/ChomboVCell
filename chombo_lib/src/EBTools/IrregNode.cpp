@@ -147,12 +147,13 @@ setNormalizedStuff(const Real& a_dx)
 
   for (int idir = 0; idir < SpaceDim; ++idir)
     {
-      if(volume > 0.);
+      Real tol = 1.0e-4;
+      if(m_volFrac > tol);
       {
         ///volume centroid
         m_volCentroid[idir] = m_volumeMoments[BASISV_TM<int,SpaceDim>(idir)];
 
-        //divide by the volume
+        //divide by the volume if big enough
         m_volCentroid[idir] /= volume;
 
         //convert to relative coordinate 
@@ -161,7 +162,8 @@ setNormalizedStuff(const Real& a_dx)
       }
       ///boundary centroid
       Real area = m_EBMoments[IvSpaceDim::Zero];
-      if(area > 0.) //can be zero if not really cut.
+      Real areaFrac = D_TERM(area, /a_dx, /a_dx);
+      if(areaFrac > tol) //can be zero if not really cut.
         {
           m_bndryCentroid[idir] = m_EBMoments[BASISV_TM<int,SpaceDim>(idir)];
 
