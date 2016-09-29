@@ -35,6 +35,15 @@ refineHere(const IrregNode& a_node, const IntVect& a_iv, const Real& a_dx) const
       bndryAreaFrac /= a_dx;
     }
   bool retval = (bndryAreaFrac > m_thresholdBA);
+
+  //now let us check boundary centroids
+  for(int idir = 0; idir < SpaceDim; idir++)
+    {
+      IvSpaceDim index = BASISV_TM<int, SpaceDim>(idir);
+      Real bcent     = a_node.m_EBMoments[index];
+      bcent /= a_dx;
+      retval = (retval || (Abs(bcent) > 0.5));
+    }
   return retval;
 }
 
