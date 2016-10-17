@@ -24,7 +24,7 @@
 
 //leave to default faulse.   Moving the coords works better
 //but makes for weird convergence tests
-bool LocalCoordMoveSwitch::s_turnOffMoveLocalCoords = false;
+bool LocalCoordMoveSwitch::s_turnOffMoveLocalCoords = true;
 
 // empty constructor (dim == 1)
 IFData<1>::IFData()
