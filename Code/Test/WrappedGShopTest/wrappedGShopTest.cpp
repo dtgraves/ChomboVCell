@@ -22,9 +22,19 @@ class MyIF : public BaseIF
 {
 	Real value(const RealVect& a_point) const
 	{
+#if CH_SPACEDIM == 1
+		double x = a_point[0];
+		double y = 6.6250 + 4 * 5.0/16;
+		double z = 6.9375 + 8 * 5.0/16;
+#elif CH_SPACEDIM == 2
+		double x = a_point[0];
+		double y = a_point[1];
+		double z = 6.9375 + 8 * 5.0/16;
+#elif CH_SPACEDIM == 3
 		double x = a_point[0];
 		double y = a_point[1];
 		double z = a_point[2];
+#endif
 		return  (z - 8.5 + (3.0 / (x + 5.0))) * (z - 8.5 + (3.0 / (x + 5.0))) + (y - 8.0) * (y - 8.0) - 1.0;
 	}
 
@@ -33,10 +43,21 @@ class MyIF : public BaseIF
 	{
 		Real retval= LARGEREALVAL;
 		int maxDir = a_partialDerivative.maxDir(false);
-		 int derivativeOrder = a_partialDerivative.sum();
+		int derivativeOrder = a_partialDerivative.sum();
+
+#if CH_SPACEDIM == 1
+		double x = a_point[0];
+		double y = 0.0;
+		double z = 0.0;
+#elif CH_SPACEDIM == 2
+		double x = a_point[0];
+		double y = a_point[1];
+		double z = 0.0;
+#elif CH_SPACEDIM == 3
 		double x = a_point[0];
 		double y = a_point[1];
 		double z = a_point[2];
+#endif
 
 		if (derivativeOrder == 0)
 		{
@@ -60,6 +81,7 @@ class MyIF : public BaseIF
 		else
 		{
 			retval = 0;
+      // pout() << "MyIF:  a_point " << a_point << " " << a_partialDerivative << " "  << retval << endl;
 		}
 //		pout() << "MyIF:  a_point " << a_point << " " << a_partialDerivative << " "  << retval << endl;
 		return retval;
@@ -78,10 +100,11 @@ int main(int argc, char *argv[])
 	int maxBoxSize = 32;
 	int blockFactor = 8;
 	int numGhostEBISLayout = 4;
-	const RealVect domainOrigin(4.375, 6.625, 6.9375);
-	const double dx = 5.0/16;
-	const RealVect dxDy(dx, dx, dx);
-	const Box domainBox(IntVect(0,0,0), IntVect(7, 7, 15));
+	const RealVect domainOrigin(D_DECL(4.375, 6.625, 6.9375));
+  const int ncells = 16;
+	const double dx = 5.0/ncells;
+	const RealVect dxDy(D_DECL(dx, dx, dx));
+	const Box domainBox(IntVect(D_DECL(0,0,0)), IntVect(D_DECL(ncells/2 - 1, ncells/2 - 1, ncells - 1)));
 	ProblemDomain domain(domainBox);
 
 	MyIF *myIf = new MyIF();
@@ -96,6 +119,7 @@ int main(int argc, char *argv[])
 	pout() << "using new wrapped gshop geometry generation" << endl;
 	int minRefine = 0;
 	int maxRefine = 10;
+  LocalCoordMoveSwitch::s_turnOffMoveLocalCoords = true;
 	WrappedGShop* workshop0 = new WrappedGShop(everythingPhase0, domainOrigin, dx, domain, minRefine, maxRefine);
 	workshop0->setRefinementCriterion(refcrit);
 	workshop0->m_phase = 0;
@@ -164,7 +188,9 @@ int main(int argc, char *argv[])
 				{
 					const VolIndex& vof = vofit();
 					const IntVect& gridIndex = vof.gridIndex();
-					if (gridIndex == IntVect(5,3,6))
+					if ((gridIndex*16)/ncells == IntVect(D_DECL(5,3,6)) ||
+              (gridIndex*16)/ncells == IntVect(D_DECL(4,1,1))
+             )
 					{
 						const RealVect& bndryCentroid = currEBISBox.bndryCentroid(vof);
 						double volFrac = currEBISBox.volFrac(vof);
